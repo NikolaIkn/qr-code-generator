@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR code generator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="main.css">
+    <style>
+        img{
+            width: 100%;
+        }
+        div img{
+            width: 150%;
+        }
+    </style>
+    <script type="text/javascript" src="qrcode.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+
+</head>
+<body>
+    <header>
+        <h1>QRcode generator</h1>
+    </header>
+  
+    <div id="data" type="json" value=jsondata></div>
+    <script>
+      fetch('https://rfidrestservice.herokuapp.com/api/rfid')
+        .then(res => res.json())
+        .then((out) => {
+          console.log('Output: ',out);
+          return jsondata = out;
+        }).catch(err => console.error(err));
+    </script>
+
+  <input id="text" type="json" value="proba" style="width:80%" /><br />
+  <div id="qrcode" style="width:200px; height:200px; margin-top:15px;"></div>
+<script type="text/javascript">
+  var qrcode = new QRCode(document.getElementById("qrcode"), {
+    width : 200,
+    height : 200
+  });
+  
+  function makeCode () {		
+    var elText = document.getElementById("text");
+    
+    if (!elText.value) {
+      alert("Input a text");
+      elText.focus();
+      return;
+    }
+    
+    qrcode.makeCode(elText.value);
+  }
+  
+  makeCode();
+  
+  $("#text").
+    on("blur", function () {
+      makeCode();
+    }).
+    on("keydown", function (e) {
+      if (e.keyCode == 13) {
+        makeCode();
+      }
+    });
+  </script>
+</body>
+</html>
