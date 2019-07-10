@@ -25,17 +25,30 @@
         <h1>QRcode generator</h1>
     </header>
   
-    <div id="data" type="json" value=jsondata></div>
+  
+    <div id="myData"></div>
     <script>
       fetch('https://rfidrestservice.herokuapp.com/api/rfid')
-        .then(res => res.json())
-        .then((out) => {
-          console.log('Output: ',out);
-          return jsondata = out;
-        }).catch(err => console.error(err));
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                appendData(data);
+            })
+            .catch(function (err) {
+                console.log('error: ' + err);
+            });
+        function appendData(data) {
+            var mainContainer = document.getElementById("myData");
+            for (var i = 0; i < data.length; i++) {
+                var div = document.createElement("div");
+                div.innerHTML = 'Proizvoid '+ data[i].id +': ' + data[i].datum + ' Naziv:' + data[i].ime + ' Lat: ' + data[i].lat + ' Lon: ' + data[i].lon + ' Zemlja: ' + data[i].zemlja;
+                mainContainer.appendChild(div);
+            }
+        }
     </script>
 
-  <input id="text" type="json" value="proba" style="width:80%" /><br />
+  <input id="text" type="text" value="Unesite vrednost za QR generator" style="width:80%" /><br />
   <div id="qrcode" style="width:200px; height:200px; margin-top:15px;"></div>
 <script type="text/javascript">
   var qrcode = new QRCode(document.getElementById("qrcode"), {
